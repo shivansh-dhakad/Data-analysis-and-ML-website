@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Machine Learning Model</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #1b1b1d;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #ffffff;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Navbar */
+      #naviagation {
+        margin: 10px;
+        background: #313132;
+        padding: 12px 20px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      }
+
+      #naviagation h4 {
+        flex: 1;
+        text-align: center;
+        background: rgba(128, 124, 248, 0.15);
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #807cf8;
+        letter-spacing: 0.5px;
+      }
+
+      button {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background-color: #606060;
+      }
+
+      #home {
+        margin-left: auto;
+        background-color: #f44d4d;
+        font-weight: bold;
+      }
+
+      #text {
+        margin: 20px;
+        padding: 20px;
+        border-radius: 12px;
+        background: linear-gradient(145deg, #1a1919, #2b2b2b);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      }
+
+      #text p {
+        line-height: 1.6;
+        color: #dcdcdc;
+        font-size: 15px;
+      }
+
+      h1 {
+        margin-bottom: 10px;
+        color: #807cf8;
+        text-align: center;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #f6f6f6;
+      }
+
+      h2,
+      h3 {
+        width: 100%;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #555;
+        color: #cfcfff;
+        text-align: center;
+      }
+
+      .card-container {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-top: 15px;
+        padding: 10px;
+      }
+
+      .card {
+        flex: 1;
+        min-width: 280px;
+        background: linear-gradient(145deg, #1a1919, #2d2d2d);
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+        min-height: 280px;
+        border: 1px solid rgba(128, 124, 248, 0.2);
+      }
+
+      .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.8);
+      }
+
+      .card p {
+        font-size: 14px;
+        color: #cccccc;
+        line-height: 1.5;
+        margin-bottom: 10px;
+      }
+
+      .card button {
+        width: 90%;
+        margin-top: 10px;
+        margin-left: 5%;
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .card button:hover,
+      #export:hover {
+        background-color: #9a96ff;
+      }
+      #export {
+        width: 20%;
+        margin-top: 10px;
+        margin-left: 40%;
+        margin-bottom: 10px;
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      label {
+        margin-top: 8px;
+        border-bottom: 1px solid #555;
+        padding-bottom: 4px;
+        font-size: 14px;
+      }
+
+      select,
+      input {
+        margin: 10px;
+        background-color: #424242;
+        color: white;
+        border: 1px solid #777;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+
+      select:focus,
+      input:focus {
+        border-color: #807cf8;
+        box-shadow: 0 0 5px rgba(128, 124, 248, 0.6);
+      }
+
+      .items {
+        padding: 0;
+      }
+      /* Multi-select boxes */
+      #numerical_cols,
+      #categorical_cols {
+        width: 100%;
+        min-height: 120px;
+        background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+        border: 1px solid #807cf8;
+        border-radius: 8px;
+        color: #ffffff;
+        padding: 6px;
+        font-size: 13px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      /* Highlight selected options */
+      #numerical_cols option:checked,
+      #categorical_cols option:checked {
+        background: #807cf8;
+        color: black;
+      }
+
+      /* Hover effect */
+      #numerical_cols:hover,
+      #categorical_cols:hover {
+        box-shadow: 0 0 6px rgba(128, 124, 248, 0.6);
+      }
+
+      /* Textareas */
+      #Numtextarea,
+      #Cattextarea {
+        width: 100%;
+        margin-top: 8px;
+        min-height: 70px;
+        resize: none;
+        background: #1c1c1c;
+        border: 1px solid #555;
+        border-radius: 8px;
+        padding: 8px;
+        color: #dcdcdc;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      /* Focus effect */
+      #Numtextarea:focus,
+      #Cattextarea:focus {
+        border-color: #807cf8;
+        box-shadow: 0 0 5px rgba(128, 124, 248, 0.5);
+      }
+
+      /* Labels spacing */
+      #model label {
+        display: block;
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+      hr {
+        width: 100%;
+        margin-top: 10px;
+        border-bottom: 1px solid #555;
+      }
+      #model_select label {
+        text-align: center;
+      }
+      #model_creation p {
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+        border-bottom: 1px solid #555;
+      }
+      /* ===== MODEL EVALUATION UI ===== */
+      #left {
+        min-width: 40%;
+        text-align: left;
+        min-height: fit-content;
+      }
+      #right {
+        min-width: 50%;
+        min-height: fit-content;
+      }
+      #bottom-left #bottom-right {
+        width: 45%;
+      }
+      /* table styling */
+      .eval-grid table,
+      #bottom-left table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .eval-grid th,
+      .eval-grid td,
+      #bottom-left th,
+      #bottom-left td {
+        border: 2px solid #444;
+        padding: 6px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="naviagation">
+      <button onclick="window.location.href = '/basic_info'">
+        basic data info
+      </button>
+      <button onclick="window.location.href = '/visualization'">
+        Data Visualization
+      </button>
+      <button onclick="window.location.href = '/processing'">
+        Data Processing
+      </button>
+      <button
+        onclick="window.location.href = '/model'"
+        style="background-color: #960dbc; color: white"
+      >
+        Model Building
+      </button>
+      <h4>Model Building</h4>
+      <button id="home" onclick="window.location.href = '/login'">Home</button>
+    </div>
+
+    <div id="text">
+      <h1>Model Building Section</h1>
+      <p>
+        This section allows users to build machine learning models using the
+        cleaned and processed dataset. The goal is to prepare the data, split it
+        correctly, and make it ready for training and evaluation.
+      </p>
+      <br />
+      <p>
+        In this section you will:
+        <br />• Select the target variable (dependent variable). <br />•
+        Separate features (independent variables) and labels. <br />• Perform
+        train-test split with custom parameters. <br />• Prepare the dataset for
+        model training.
+      </p>
+    </div>
+    <!-- first card container -->
+    <div class="card-container">
+      <h2>Data Split</h2>
+
+      <div class="card">
+        <p>
+          Choose the target variable (y). The remaining columns will
+          automatically be treated as feature variables (X).
+        </p>
+        <label for="y">Select target variable (y)</label>
+        <select name="y" id="y">
+          <option>--select column--</option>
+        </select>
+        <button id="splitDataBtn">Split Data</button>
+      </div>
+
+      <div class="card">
+        <p>
+          This section displays the separated feature columns (X) and target
+          column (y) after the split operation.
+        </p>
+        <label>X-Columns</label>
+        <div id="x_cols"></div>
+        <label>y-Columns</label>
+        <div id="y_cols"></div>
+      </div>
+    </div>
+    <!-- second card container -->
+    <div class="card-container">
+      <h2>Train-Test Split</h2>
+
+      <div class="card">
+        <p>
+          Train-test split is used to divide the dataset into two parts: a
+          training set and a testing set. The training set is used to train the
+          machine learning model, while the testing set is used to evaluate how
+          well the model performs on unseen data.
+        </p>
+
+        <p>
+          This helps prevent overfitting and provides a realistic estimate of
+          model accuracy on new data.
+        </p>
+
+        <p id="train-test-info"></p>
+      </div>
+
+      <div class="card">
+        <p>
+          Configure how the dataset is split into training and testing sets
+          using the following parameters:
+        </p>
+
+        <ul
+          style="
+            margin-left: 10px;
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cccccc;
+          "
+        >
+          <li>
+            <b>Test size:</b> Proportion of the dataset used for testing (e.g.,
+            0.2 = 20%).
+          </li>
+          <li>
+            <b>Random state:</b> Controls randomness for reproducible results.
+          </li>
+          <li>
+            <b>Shuffle:</b> Determines whether data is shuffled before
+            splitting.
+          </li>
+        </ul>
+
+        <p>
+          A common practice is to use 70–80% of the data for training and the
+          remaining 20–30% for testing.
+        </p>
+
+        <div class="items">
+          <label>Test size</label>
+          <input type="number" id="testSize" placeholder="e.g. 0.2" />
+        </div>
+
+        <div class="items">
+          <label>Random state</label>
+          <input type="number" id="randomState" placeholder="e.g. 42" />
+        </div>
+
+        <div class="items">
+          <label>Shuffle</label>
+          <select id="shuffle">
+            <option value="True">True</option>
+            <option value="False">False</option>
+          </select>
+        </div>
+
+        <button id="trainTestBtn">Train-Test Split</button>
+      </div>
+    </div>
+    <!-- third card container -->
+    <div class="card-container" id="model_creation">
+      <h2>Model Selection</h2>
+      <!-- column card -->
+      <div
+        class="card"
+        id="column"
+        style="min-width: 60%; max-height: fit-content"
+      >
+        <p>Select Columns</p>
+        <div>
+          <label style="border: none">Numerical Columns:</label>
+          <select id="numerical_cols" multiple>
+            <option value="">--select column--</option>
+          </select>
+          <textarea
+            id="Numtextarea"
+            placeholder="Selected numerical columns..."
+            readonly
+          ></textarea>
+          <hr />
+        </div>
+
+        <div>
+          <label style="border: none">Categorical Columns:</label>
+          <select id="categorical_cols" multiple>
+            <option value="">--select column--</option>
+          </select>
+          <textarea
+            id="Cattextarea"
+            placeholder="Selected categorical columns..."
+            readonly
+          ></textarea>
+          <hr />
+        </div>
+      </div>
+      <div style="min-width: 30%; max-height: fit-content">
+        <div class="card" id="model_select">
+          <p>Scaling , Encoding and Model selection</p>
+          <label for="scaler">Select Scaler:</label>
+          <select name="scaler" id="scaler">
+            <option value="">--Select Scaler--</option>
+            <option value="standardscaler">Standard Scaler</option>
+            <option value="MinMaxscaler">Min Max Scaler</option>
+          </select>
+
+          <label for="encoder">Select Encoder:</label>
+          <select name="encoder" id="encoder">
+            <option value="">--Select Encoder--</option>
+            <option value="Label">Label Encoder</option>
+            <option value="OnehotEncoder">One hot Encoder</option>
+          </select>
+
+          <label for="model">Select Model</label>
+          <select name="model" id="model">
+            <option value="">--Select Model--</option>
+            <option value="linear">Linear Regression</option>
+            <option value="logistic">Logistic Regression</option>
+            <option value="knnc">K-Nearest Neighbour classifier</option>
+            <option value="knnr">K-Nearest Neighbour regressor</option>
+            <option value="naive">Naive baise</option>
+            <option value="svc">Support Vector classifier</option>
+            <option value="svr">Support Vector regressor</option>
+            <option value="decisionc">Decision Tree classifier</option>
+            <option value="decisionr">Decision Tree regressor</option>
+            <option value="random_forestc">Random Forest classifier</option>
+            <option value="random_forestr">Random Forest regressor</option>
+          </select>
+        </div>
+
+        <div class="card" id="pipeline" style="margin-top: 10px">
+          <p>Pipeline Creation</p>
+          <button id="create_pipeline">Make Pipeline</button>
+          <p>Model Training</p>
+          <button id="create_model">Train Model</button>
+          <p>Model Testing</p>
+          <button id="model_evaluation">Model Evaluation</button>
+        </div>
+      </div>
+    </div>
+    <h2>Model Evaluation</h2>
+    <div class="card-container" id="evaluation_result"></div>
+    <h2>Model Exporting</h2>
+    <button id="export">Export Model</button>
+    <!-- script section -->
+    <script>
+      const ySelect = document.getElementById("y");
+      const xColsDiv = document.getElementById("x_cols");
+      const yColsDiv = document.getElementById("y_cols");
+      const splitDataBtn = document.getElementById("splitDataBtn");
+      const trainTestBtn = document.getElementById("trainTestBtn");
+      const splitResultDiv = document.getElementById("train-test-info");
+      const numSelect = document.getElementById("numerical_cols");
+      const catSelect = document.getElementById("categorical_cols");
+      const numText = document.getElementById("Numtextarea");
+      const catText = document.getElementById("Cattextarea");
+
+      // Load columns
+      async function loadColumns() {
+        try {
+          const response = await fetch("/get_columns");
+          if (!response.ok) throw new Error("Server error");
+
+          const data = await response.json();
+          if (data.error) throw new Error(data.error);
+
+          ySelect.innerHTML = "<option>--select column--</option>";
+          data.forEach((col) => {
+            const option = document.createElement("option");
+            option.value = col;
+            option.textContent = col;
+            ySelect.appendChild(option);
+          });
+        } catch (error) {
+          alert("Error loading columns. Upload dataset first.");
+          console.error(error);
+        }
+      }
+
+      window.onload = loadColumns;
+
+      let numericalCols = [];
+      let categoricalCols = [];
+
+      async function loadModelColumns() {
+        const res = await fetch("/get_X_train_columns");
+        const data = await res.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        numericalCols = data.numerical;
+        categoricalCols = data.categorical;
+
+        numSelect.innerHTML = "";
+        catSelect.innerHTML = "";
+
+        numericalCols.forEach((col) => {
+          const opt = document.createElement("option");
+          opt.value = col;
+          opt.textContent = col;
+          numSelect.appendChild(opt);
+        });
+
+        categoricalCols.forEach((col) => {
+          const opt = document.createElement("option");
+          opt.value = col;
+          opt.textContent = col;
+          catSelect.appendChild(opt);
+        });
+      }
+
+      function updateTextarea(selectElem, textareaElem) {
+        const selected = Array.from(selectElem.selectedOptions).map(
+          (o) => o.value,
+        );
+
+        textareaElem.value = selected.join(", ");
+      }
+
+      numSelect.addEventListener("change", () => {
+        updateTextarea(numSelect, numText);
+      });
+
+      catSelect.addEventListener("change", () => {
+        updateTextarea(catSelect, catText);
+      });
+      // Split X and y
+      splitDataBtn.addEventListener("click", async () => {
+        try {
+          const selectedY = ySelect.value;
+          if (selectedY === "--select column--") {
+            alert("Please select target column");
+            return;
+          }
+
+          const response = await fetch("/split_xy", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ target: selectedY }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok || result.error) {
+            alert(result.error || "Failed to split X and y");
+            return;
+          }
+
+          xColsDiv.innerHTML = "";
+          yColsDiv.innerHTML = "";
+
+          result.x_columns.forEach((col) => {
+            const div = document.createElement("div");
+            div.textContent = col;
+            xColsDiv.appendChild(div);
+          });
+
+          const ydiv = document.createElement("div");
+          ydiv.textContent = result.y_column;
+          yColsDiv.appendChild(ydiv);
+        } catch (error) {
+          console.error(error);
+          alert("Error splitting X and y");
+        }
+      });
+
+      // Train-Test Split UI update
+      trainTestBtn.addEventListener("click", async () => {
+        try {
+          const testSize = document.getElementById("testSize").value;
+          const randomState = document.getElementById("randomState").value;
+          const shuffle = document.getElementById("shuffle").value;
+
+          if (!testSize || !randomState) {
+            alert("Please enter Test Size and Random State.");
+            return;
+          }
+
+          if (testSize <= 0 || testSize >= 1) {
+            alert("Test size must be between 0 and 1.");
+            return;
+          }
+
+          const response = await fetch("/train_test_split", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              test_size: testSize,
+              random_state: randomState,
+              shuffle: shuffle,
+            }),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok || result.error) {
+            alert(result.error || "Train-test split failed");
+            return;
+          }
+
+          splitResultDiv.innerHTML = `
+      <p><b>Status:</b> Train-Test Split Applied</p>
+      <p><b>Train shape:</b> ${result.train_shape}</p>
+      <p><b>Test shape:</b> ${result.test_shape}</p>
+      <p><b>Shuffle:</b> ${result.shuffle}</p>
+    `;
+          loadModelColumns();
+        } catch (error) {
+          console.error(error);
+          alert("Server error during train-test split.");
+        }
+      });
+      // create pipeline
+      const pipe = document.getElementById("create_pipeline");
+      const scaler = document.getElementById("scaler");
+      const encoder = document.getElementById("encoder");
+      const model = document.getElementById("model");
+
+      pipe.addEventListener("click", async () => {
+        const selectedNumerical = Array.from(numSelect.selectedOptions).map(
+          (o) => o.value,
+        );
+        const selectedCategorical = Array.from(catSelect.selectedOptions).map(
+          (o) => o.value,
+        );
+
+        if (
+          selectedNumerical.length === 0 &&
+          selectedCategorical.length === 0
+        ) {
+          alert("Please select at least one column");
+          return;
+        }
+        if (!scaler.value || !encoder.value || !model.value) {
+          alert("Please select scaler, encoder and model");
+          return;
+        }
+        const res = await fetch("/set_model_columns", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            numerical: selectedNumerical,
+            categorical: selectedCategorical,
+            scaling: scaler.value,
+            encoding: encoder.value,
+            model: model.value,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Pipeline successfully created");
+        }
+      });
+      const create_model = document.getElementById("create_model");
+
+      create_model.addEventListener("click", async () => {
+        try {
+          const res = await fetch("/model_create", { method: "POST" });
+          const data = await res.json();
+          alert(data.message || "Model trained");
+        } catch (err) {
+          console.error(err);
+          alert("Error training model");
+        }
+      });
+      const evalBtn = document.getElementById("model_evaluation");
+      const resultDiv = document.getElementById("evaluation_result");
+
+      evalBtn.addEventListener("click", async () => {
+        const res = await fetch("/model_evaluation");
+        const data = await res.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        let leftCard = "";
+        let rightCard = "";
+        let bottomCard = "";
+
+        // REGRESSION
+        if (data.model_type === "regression") {
+          leftCard = `
+      <h3>Regression Metrics</h3>
+      <p><b>R2 Score:</b> ${data.r2_score.toFixed(4)}</p>
+      <p><b>MSE:</b> ${data.mse.toFixed(4)}</p>
+      <p><b>RMSE:</b> ${data.rmse.toFixed(4)}</p>
+      <p><b>MAE:</b> ${data.mae.toFixed(4)}</p>
+    `;
+
+          rightCard = `
+      <h3>Model Info</h3>
+      <p><b>Target:</b> ${data.target || "-"}</p>
+      <p><b>Samples:</b> ${data.samples || "-"}</p>
+    `;
+
+          bottomCard = `
+      <h3>Predictions</h3>
+      ${data.predictions_table || "<p>No predictions to show</p>"}
+    `;
+        }
+
+        // CLASSIFICATION
+        if (data.model_type === "classification") {
+          let matrixHTML =
+            "<table style='border-collapse:collapse;width:100%;text-align:center'>";
+          data.confusion_matrix.forEach((row) => {
+            matrixHTML += "<tr>";
+            row.forEach((val) => {
+              matrixHTML += `<td style="padding:8px;border:1px solid #333">${val}</td>`;
+            });
+            matrixHTML += "</tr>";
+          });
+          matrixHTML += "</table>";
+
+          let reportHTML =
+            "<table style='border-collapse:collapse;width:100%'>";
+          reportHTML += `
+      <tr>
+        <th>Class</th>
+        <th>Precision</th>
+        <th>Recall</th>
+        <th>F1-score</th>
+        <th>Support</th>
+      </tr>
+    `;
+
+          for (let key in data.classification_report) {
+            if (
+              key !== "accuracy" &&
+              key !== "macro avg" &&
+              key !== "weighted avg"
+            ) {
+              const row = data.classification_report[key];
+              reportHTML += `
+          <tr>
+            <td>${key}</td>
+            <td>${row.precision.toFixed(3)}</td>
+            <td>${row.recall.toFixed(3)}</td>
+            <td>${row["f1-score"].toFixed(3)}</td>
+            <td>${row.support}</td>
+          </tr>
+        `;
+            }
+          }
+
+          leftCard = `
+      <h3>Classification Metrics</h3>
+      <p><b>Accuracy:</b> ${data.accuracy.toFixed(4)}</p>
+      <p><b>Precision:</b> ${data.precision.toFixed(4)}</p>
+      <p><b>Recall:</b> ${data.recall.toFixed(4)}</p>
+      <p><b>F1 Score:</b> ${data.f1_score.toFixed(4)}</p>
+    `;
+
+          rightCard = `
+      <h3>Confusion Matrix</h3>
+      ${matrixHTML}
+    `;
+
+          bottomCard = `
+      <h3>Classification Report</h3>
+      ${reportHTML}
+    `;
+        }
+
+        let plotCard = `
+  <div class="card" style="width:100%;text-align:center">
+    <h3>Best Fit / Prediction Plot</h3>
+    <img src="data:image/png;base64,${data.plot}" style="max-width:100%;border-radius:10px">
+  </div>
+`;
+
+        resultDiv.innerHTML = `
+  <div class="card" id="left">${leftCard}</div>
+  <div class="card" id="right">${rightCard}</div>
+  <div class="card" id="bottom-left">${bottomCard}</div>
+  <div id="bottom-right">${plotCard}</div>
+`;
+      });
+      const ex = document.getElementById("export");
+      ex.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/export");
+          if (!response.ok) {
+            const data = await response.json();
+            alert(data.error || "Failed to export model");
+            return;
+          }
+
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "model.pkl"; // file name
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        } catch (err) {
+          console.error(err);
+          alert("An unexpected error occurred while exporting the model.");
+        }
+      });
+    </script>
+  </body>
+</html>

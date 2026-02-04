@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Data Processing</title>
+    <style>
+      /* Reset & Base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #1b1b1d;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #ffffff;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Navigation */
+      #naviagation {
+        margin: 10px;
+        background: #313132;
+        padding: 12px 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      #naviagation h4 {
+        flex: 1;
+        text-align: center;
+        background: rgba(128, 124, 248, 0.15);
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #807cf8;
+      }
+
+      button {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background-color: #606060;
+      }
+
+      .active-btn {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+      }
+
+      #home {
+        margin-left: auto;
+        background-color: #f44d4d;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 6px;
+      }
+
+      /* Processing sections */
+      .processing-section {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin: 15px 5px;
+      }
+
+      .processing-section h3 {
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #646464;
+      }
+
+      /* Cards */
+      .processing-card {
+        flex: 1;
+        min-width: 250px;
+        background: linear-gradient(145deg, #1a1919, #2d2d2d);
+        border-radius: 12px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      select {
+        background-color: #424242;
+        color: white;
+        border: 1px solid #777;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      select:hover {
+        border-color: #bbb;
+      }
+      .processing-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+      }
+
+      .processing-card h5 {
+        border-bottom: 1px solid #646464;
+        padding-bottom: 5px;
+      }
+
+      /* Buttons */
+      .process-btn,
+      .data-preview-section button,
+      #download_file {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        border: none;
+        transition: 0.3s;
+      }
+
+      .process-btn:hover,
+      .data-preview-section button:hover,
+      #download_file:hover {
+        background-color: #9a96ff;
+      }
+
+      /* Data preview section */
+      .data-preview-section {
+        margin: 15px 5px;
+        padding: 15px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        background: linear-gradient(145deg, #1a1919, #2d2d2d);
+      }
+
+      .data-preview-section h3 {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid #646464;
+      }
+
+      .data-preview-section button {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-top: 8px;
+      }
+      .data-preview-section button:hover {
+        background-color: #606060;
+      }
+
+      .data-preview-section .active-btn {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+      }
+
+      /* Tables */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th {
+        background-color: #646464;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+      }
+
+      td {
+        padding: 8px 12px;
+        text-align: center;
+        color: #ffffff;
+        border-top: 1px solid #444;
+      }
+
+      /* Download section */
+      #download {
+        margin: 15px 5px;
+        text-align: center;
+      }
+
+      #download_file {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 10px 20px;
+        cursor: pointer;
+        border: none;
+        font-size: 16px;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 900px) {
+        .processing-section {
+          flex-direction: column;
+        }
+        .processing-card,
+        .data-preview-section {
+          max-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="naviagation">
+      <button id="data_info" onclick="window.location.href = '/basic_info'">
+        basic data info
+      </button>
+      <button onclick="window.location.href = '/visualization'">
+        Data Visualization
+      </button>
+      <button
+        id="processing"
+        onclick="window.location.href = '/processing'"
+        style="background-color: #960dbc; color: white"
+      >
+        Data Processing
+      </button>
+      <button onclick="window.location.href = '/model'">Model Building</button>
+      <h4>Data Processing</h4>
+      <button id="home" onclick="window.location.href = '/login'">Home</button>
+    </div>
+
+    <div class="processing-section">
+      <h3>Data Processing Tasks</h3>
+
+      <div class="processing-card">
+        <h5>Handle Missing Values</h5>
+        <select id="missing_col"></select>
+
+        <select id="missing_method">
+          <option value="">--Select Method--</option>
+          <option value="drop">Drop</option>
+          <option value="mean">Mean</option>
+          <option value="median">Median</option>
+          <option value="mode">Mode</option>
+        </select>
+
+        <button class="process-btn" onclick="handleMissing()">Process</button>
+      </div>
+
+      <div class="processing-card">
+        <h5>Handle Duplicates</h5>
+        <select id="dup_method">
+          <option value="">--Select Method--</option>
+          <option value="drop">Drop All</option>
+          <option value="keep_first">Keep First</option>
+          <option value="keep_last">Keep Last</option>
+        </select>
+
+        <button class="process-btn" onclick="handleDuplicates()">
+          Process
+        </button>
+      </div>
+
+      <div class="processing-card">
+        <h5>Handle Outliers</h5>
+
+        <select id="outlier_col">
+          <option value="">--Select Column--</option>
+        </select>
+
+        <select id="q_low">
+          <option value="">Lower Quantile</option>
+          <option value="0.01">1%</option>
+          <option value="0.05">5%</option>
+          <option value="0.1">10%</option>
+        </select>
+
+        <select id="q_high">
+          <option value="">Upper Quantile</option>
+          <option value="0.9">90%</option>
+          <option value="0.95">95%</option>
+          <option value="0.99">99%</option>
+        </select>
+
+        <button class="process-btn" onclick="handleOutliers()">
+          Remove Outliers
+        </button>
+      </div>
+
+      <div class="processing-card">
+        <h5>Change Column Data Type</h5>
+        <select id="dtype_col">
+          <option value="">--Select Column--</option>
+        </select>
+        <select id="new_dtype">
+          <option value="">--Select Type--</option>
+          <option value="int">Integer</option>
+          <option value="float">Float</option>
+          <option value="str">String</option>
+          <option value="category">Category</option>
+        </select>
+        <button class="process-btn" onclick="changeDtype()">Change Type</button>
+      </div>
+
+      <div class="processing-card">
+        <h5>Drop Columns</h5>
+        <select id="drop_col">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="process-btn" onclick="dropColumn()">Drop Column</button>
+      </div>
+    </div>
+
+    <div class="data-preview-section">
+      <h3>Data Preview</h3>
+      <div>
+        <button id="first_rows">First 5 Rows</button>
+        <button id="last_rows">Last 5 Rows</button>
+        <button id="random_rows">Random 5 Rows</button>
+      </div>
+      <div id="processed_data" style="margin-top: 10px; overflow-x: auto"></div>
+    </div>
+
+    <div id="download">
+      <button id="download_file" class="process-btn">Download File</button>
+    </div>
+
+    <script>
+      const processedDataDiv = document.getElementById("processed_data");
+
+      // =========================
+      // ALERT FUNCTION
+      // =========================
+      function showAlert(message, type = "success") {
+        const alertDiv = document.createElement("div");
+        alertDiv.textContent = message;
+        alertDiv.style.position = "fixed";
+        alertDiv.style.top = "20px";
+        alertDiv.style.right = "20px";
+        alertDiv.style.padding = "12px 20px";
+        alertDiv.style.borderRadius = "8px";
+        alertDiv.style.zIndex = 9999;
+        alertDiv.style.color = type === "success" ? "#000" : "#fff";
+        alertDiv.style.backgroundColor =
+          type === "success" ? "#9a96ff" : "#f44d4d";
+        alertDiv.style.boxShadow = "0 4px 12px rgba(0,0,0,0.4)";
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 2500);
+      }
+
+      // =========================
+      // DATA PREVIEW
+      // =========================
+      const firstBtn = document.getElementById("first_rows");
+      const lastBtn = document.getElementById("last_rows");
+      const randomBtn = document.getElementById("random_rows");
+
+      function setActive(btn) {
+        firstBtn.classList.remove("active-btn");
+        lastBtn.classList.remove("active-btn");
+        randomBtn.classList.remove("active-btn");
+        btn.classList.add("active-btn");
+      }
+
+      function fetchData(route) {
+        fetch(route)
+          .then((res) => res.json())
+          .then((data) => renderTable(data))
+          .catch((err) => showAlert("Failed to fetch data: " + err, "error"));
+      }
+
+      function renderTable(data) {
+        if (!data || data.error) {
+          processedDataDiv.innerHTML = data?.error || "No data available";
+          return;
+        }
+
+        let table = "<table border='1'><tr>";
+        Object.keys(data[0]).forEach((col) => {
+          table += `<th>${col}</th>`;
+        });
+        table += "</tr>";
+
+        data.forEach((row) => {
+          table += "<tr>";
+          Object.values(row).forEach((val) => {
+            table += `<td>${val === null ? "" : val}</td>`;
+          });
+          table += "</tr>";
+        });
+
+        table += "</table>";
+        processedDataDiv.innerHTML = table;
+      }
+
+      firstBtn.onclick = () => {
+        setActive(firstBtn);
+        fetchData("/head");
+      };
+      lastBtn.onclick = () => {
+        setActive(lastBtn);
+        fetchData("/tail");
+      };
+      randomBtn.onclick = () => {
+        setActive(randomBtn);
+        fetchData("/sample");
+      };
+
+      function refreshTable() {
+        const activeBtn = document.querySelector(
+          ".data-preview-section .active-btn",
+        );
+        if (activeBtn) activeBtn.click();
+      }
+
+      // =========================
+      // POPULATE COLUMNS
+      // =========================
+      function populateColumns() {
+        fetch("/columns_info")
+          .then((res) => res.json())
+          .then((data) => {
+            const colSelectors = [
+              "missing_col",
+              "outlier_col",
+              "dtype_col",
+              "drop_col",
+            ];
+            colSelectors.forEach((id) => {
+              const sel = document.getElementById(id);
+              sel.innerHTML = "<option value=''>--Select Column--</option>";
+              data.numerical.concat(data.categorical).forEach((col) => {
+                sel.innerHTML += `<option value="${col}">${col}</option>`;
+              });
+            });
+          })
+          .catch((err) => showAlert("Failed to load columns: " + err, "error"));
+      }
+      populateColumns();
+
+      // =========================
+      // HANDLE MISSING VALUES
+      // =========================
+      function handleMissing() {
+        const col = document.getElementById("missing_col").value;
+        const method = document.getElementById("missing_method").value;
+        if (!col || !method)
+          return showAlert("Select column and method", "error");
+
+        fetch("/process/missing", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col, method: method }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              refreshTable();
+              showAlert(
+                `Missing values processed for "${col}" using "${method}"`,
+              );
+            } else if (data.error) {
+              showAlert(data.error, "error");
+            }
+          })
+          .catch((err) => showAlert(err, "error"));
+      }
+
+      // =========================
+      // HANDLE DUPLICATES
+      // =========================
+      function handleDuplicates() {
+        const method = document.getElementById("dup_method").value;
+        if (!method)
+          return showAlert("Select a duplicate handling method", "error");
+
+        fetch("/process/duplicates", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ method: method }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              showAlert(data.message);
+              refreshTable();
+            } else if (data.error) {
+              showAlert(data.error, "error");
+            }
+          });
+      }
+
+      // =========================
+      // HANDLE OUTLIERS
+      // =========================
+      function handleOutliers() {
+        const col = document.getElementById("outlier_col").value;
+        const qLow = document.getElementById("q_low").value;
+        const qHigh = document.getElementById("q_high").value;
+
+        if (!col || !qLow || !qHigh)
+          return showAlert("Select column and quantiles", "error");
+
+        fetch("/process/outlier", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col, q_low: qLow, q_high: qHigh }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              refreshTable();
+              showAlert(`Outliers removed from "${col}"`);
+            } else if (data.error) {
+              showAlert(data.error, "error");
+            }
+          })
+          .catch((err) => showAlert(err, "error"));
+      }
+
+      // =========================
+      // CHANGE DATA TYPE
+      // =========================
+      function changeDtype() {
+        const col = document.getElementById("dtype_col").value;
+        const dtype = document.getElementById("new_dtype").value;
+        if (!col || !dtype) return showAlert("Select column and type", "error");
+
+        fetch("/process/dtype", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col, dtype: dtype }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              refreshTable();
+              showAlert(`Column "${col}" converted to "${dtype}"`);
+            } else if (data.error) {
+              showAlert(data.error, "error");
+            }
+          })
+          .catch((err) => showAlert(err, "error"));
+      }
+
+      // =========================
+      // DROP COLUMN
+      // =========================
+      function dropColumn() {
+        const col = document.getElementById("drop_col").value;
+        if (!col) return showAlert("Select a column", "error");
+
+        fetch("/process/drop", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              populateColumns();
+              refreshTable();
+              showAlert(`Column "${col}" dropped`);
+            } else if (data.error) {
+              showAlert(data.error, "error");
+            }
+          })
+          .catch((err) => showAlert(err, "error"));
+      }
+
+      // =========================
+      // DOWNLOAD FILE
+      // =========================
+      document.getElementById("download_file").onclick = () => {
+        window.location.href = "/download";
+      };
+    </script>
+  </body>
+</html>

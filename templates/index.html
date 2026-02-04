@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Hub</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: #0f0f14;
+        font-family: "Segoe UI", sans-serif;
+        color: #e5e7eb;
+      }
+
+      .main {
+        display: flex;
+        height: 100vh;
+        padding: 60px;
+        gap: 60px;
+      }
+
+      .left {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .left h1 {
+        font-size: 3.8rem;
+      }
+      .primary {
+        background: linear-gradient(90deg, #8b5cf6, #22c55e);
+        color: transparent; /* fallback for browsers that don't support background-clip */
+        -webkit-background-clip: text; /* Chrome, Safari */
+        -moz-background-clip: text; /* Firefox */
+        background-clip: text; /* Standard property */
+      }
+      .left p {
+        margin-top: 20px;
+        font-size: 1.2rem;
+        color: #cbd5f5;
+        max-width: 500px;
+      }
+
+      .right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card {
+        background: #1b1b23;
+        border-radius: 20px;
+        padding: 50px;
+        width: 480px;
+        border: 1px solid #2d2d3a;
+      }
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+      }
+
+      .droparea {
+        height: 180px;
+        border: 2px dashed #8b5cf6;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .droparea:hover {
+        background: #2d2d3a;
+        color: #22c55e;
+      }
+
+      .or {
+        text-align: center;
+        margin: 15px;
+        color: #aaa;
+      }
+
+      input {
+        width: 100%;
+        margin: 10px 0 20px;
+        color: white;
+      }
+
+      button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 30px;
+        background: linear-gradient(90deg, #960dbc, #807cf8);
+        color: black;
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+
+      button:hover {
+        opacity: 0.85;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="left">
+        <h1>Welcome to</h1>
+        <h1 class="primary">DATA HUB</h1>
+        <p>
+          Analyze, visualize and process your datasets with an interactive
+          dashboard.
+        </p>
+      </div>
+
+      <div class="right">
+        <div class="card">
+          <div class="droparea">Drop your CSV file</div>
+          <div class="or">or</div>
+          <input type="file" id="fileinput" accept=".csv,.xlsx" />
+          <button id="processButton">Process Data</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const droparea = document.querySelector(".droparea");
+      const fileInput = document.getElementById("fileinput");
+      const button = document.getElementById("processButton");
+      let file = null;
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((e) => {
+        droparea.addEventListener(e, (x) => x.preventDefault());
+      });
+
+      droparea.addEventListener("drop", (e) => {
+        file = e.dataTransfer.files[0];
+        handleFile(file);
+      });
+
+      fileInput.addEventListener("change", () => {
+        file = fileInput.files[0];
+        handleFile(file);
+      });
+
+      function handleFile(f) {
+        if (!f) return;
+        if (f.name.endsWith(".csv") || f.name.endsWith(".xlsx")) {
+          droparea.textContent = "Added: " + f.name;
+        } else {
+          droparea.textContent = "Invalid format";
+          file = null;
+        }
+      }
+
+      button.onclick = async () => {
+        if (!file) return alert("Select file");
+        let fd = new FormData();
+        fd.append("file", file);
+        let res = await fetch("/upload", { method: "POST", body: fd });
+        let data = await res.json();
+        if (res.ok) location.href = "/basic_info";
+        else alert(data.error);
+      };
+    </script>
+  </body>
+</html>

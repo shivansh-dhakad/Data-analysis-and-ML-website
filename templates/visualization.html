@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Data Visualization</title>
+
+    <style>
+      /* Reset & Base */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: #1b1b1d;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: #ffffff;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Navigation */
+      #naviagation {
+        margin: 10px;
+        background: #313132;
+        padding: 12px 20px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      #naviagation h4 {
+        flex: 1;
+        text-align: center;
+        background: rgba(128, 124, 248, 0.15);
+        border-radius: 8px;
+        padding: 6px 12px;
+        border: 1px solid #807cf8;
+      }
+
+      button {
+        background-color: transparent;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        background-color: #606060;
+      }
+      .active-btn {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+      }
+      #home {
+        margin-left: auto;
+        background-color: #f44d4d;
+        font-weight: bold;
+      }
+
+      /* Sections */
+      .univariate-section,
+      .bivariate-section {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        padding: 10px;
+        border-radius: 10px;
+      }
+
+      h3 {
+        width: 100%;
+        margin: 5px 0;
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #555;
+      }
+
+      /* Cards */
+      .univariate,
+      .bivariate {
+        flex: 1;
+        margin: 10px;
+        background: linear-gradient(145deg, #1a1919, #2d2d2d);
+        padding: 15px;
+        border-radius: 12px;
+        overflow: hidden;
+        max-height: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+      }
+      .bivariate {
+        min-width: 40%;
+      }
+      .univariate:hover,
+      .bivariate:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+      }
+
+      .univariate h5,
+      .bivariate h5 {
+        margin-bottom: 8px;
+        border-bottom: 1px solid #555;
+        padding-bottom: 5px;
+      }
+
+      /* Dropdown styling */
+      select {
+        background-color: #424242;
+        color: white;
+        border: 1px solid #777;
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 14px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      select:hover {
+        border-color: #bbb;
+      }
+
+      /* Generate button */
+      .plot-btn {
+        background-color: #807cf8;
+        color: black;
+        font-weight: bold;
+        border-radius: 6px;
+        padding: 8px 14px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .plot-btn:hover {
+        background-color: #9a96ff;
+      }
+
+      /* Images */
+      img {
+        margin-top: 10px;
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid #666;
+        background-color: #222;
+      }
+
+      /* Bivariate graphs container */
+      .bivariate-graphs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .bivariate-graphs img {
+        flex: 1;
+        width: 48%;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 900px) {
+        .univariate,
+        .bivariate {
+          flex: 100%;
+        }
+        .bivariate-graphs img {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="naviagation">
+      <button onclick="window.location.href = '/basic_info'">
+        basic data info
+      </button>
+      <button
+        id="visualization"
+        onclick="window.location.href = '/visualization'"
+        style="background-color: #960dbc; color: white"
+      >
+        Data Visualization
+      </button>
+      <button onclick="window.location.href = '/processing'">
+        Data Processing
+      </button>
+      <button onclick="window.location.href = '/model'">Model Building</button>
+      <h4>Data Visualization</h4>
+      <button id="home" onclick="window.location.href = '/login'">Home</button>
+    </div>
+
+    <div class="univariate-section">
+      <h3>Univariate Categorical Analysis</h3>
+
+      <div class="univariate" id="countplot">
+        <h5>Countplot</h5>
+        <select id="countplot_select">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="plot-btn" onclick="generateCountPlot()">
+          Generate Countplot
+        </button>
+        <img id="countplot_img" />
+      </div>
+
+      <div class="univariate" id="piechart">
+        <h5>Pie Chart</h5>
+        <select id="piechart_select">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="plot-btn" onclick="generatePieChart()">
+          Generate Pie Chart
+        </button>
+        <img id="piechart_img" />
+      </div>
+    </div>
+    <div class="univariate-section">
+      <h3>Univariate Numerical Analysis</h3>
+
+      <div class="univariate">
+        <h5>Histogram</h5>
+        <select id="hist_select">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="plot-btn" onclick="generateHist()">
+          Generate Histogram
+        </button>
+        <img id="hist_img" />
+      </div>
+
+      <div class="univariate">
+        <h5>KDE Plot</h5>
+        <select id="kde_select">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="plot-btn" onclick="generateKDE()">Generate KDE</button>
+        <img id="kde_img" />
+      </div>
+
+      <div class="univariate">
+        <h5>Boxplot</h5>
+        <select id="box_select">
+          <option value="">--Select Column--</option>
+        </select>
+        <button class="plot-btn" onclick="generateBox()">
+          Generate Boxplot
+        </button>
+        <img id="box_img" />
+      </div>
+    </div>
+    <div class="bivariate-section">
+      <h3>Bivariate Analysis</h3>
+
+      <div class="bivariate">
+        <h5>Scatter Plot</h5>
+        <select id="scat_x"></select>
+        <select id="scat_y"></select>
+        <button class="plot-btn" onclick="genScatter()">Generate</button>
+        <img id="scat_img" />
+      </div>
+
+      <div class="bivariate">
+        <h5>Boxplot (Hue)</h5>
+        <select id="box_x"></select>
+        <select id="box_y"></select>
+        <select id="box_hue">
+          <option value="">--Select Hue--</option>
+        </select>
+        <button class="plot-btn" onclick="genBoxBi()">Generate</button>
+        <img id="box_bi_img" />
+      </div>
+
+      <div class="bivariate">
+        <h5>Distplot</h5>
+        <select id="dist_x"></select>
+        <select id="dist_y"></select>
+        <button class="plot-btn" onclick="genDist()">Generate</button>
+        <img id="dist_img" />
+      </div>
+
+      <div class="bivariate">
+        <h5>Barplot</h5>
+        <select id="bar_x"></select>
+        <select id="bar_y"></select>
+        <button class="plot-btn" onclick="genBar()">Generate</button>
+        <img id="bar_img" />
+      </div>
+
+      <div class="bivariate">
+        <h5>Lineplot</h5>
+        <select id="line_x"></select>
+        <select id="line_y"></select>
+        <button class="plot-btn" onclick="genLine()">Generate</button>
+        <img id="line_img" />
+      </div>
+
+      <div class="bivariate">
+        <h5>Heatmap</h5>
+        <button class="plot-btn" onclick="genHeatmap()">Generate</button>
+        <img id="heatmap_img" />
+      </div>
+      <div class="bivariate">
+        <h5>Pair Plot</h5>
+        <select id="pairplot_kind">
+          <option value="scatter">Scatter</option>
+          <option value="kde">KDE</option>
+          <option value="reg">Regression</option>
+          <option value="hist">Histogram</option>
+        </select>
+        <button class="plot-btn" onclick="genPairPlot()">Generate</button>
+        <img id="pairplot_img" />
+      </div>
+    </div>
+
+    <script>
+      fetch("/categorical")
+        .then((r) => r.json())
+        .then((cols) => {
+          let countSelect = document.getElementById("countplot_select");
+          let pieSelect = document.getElementById("piechart_select");
+
+          cols.forEach((c) => {
+            let opt1 = document.createElement("option");
+            opt1.value = c;
+            opt1.textContent = c;
+            countSelect.appendChild(opt1);
+
+            let opt2 = document.createElement("option");
+            opt2.value = c;
+            opt2.textContent = c;
+            pieSelect.appendChild(opt2);
+          });
+        });
+
+      function generateCountPlot() {
+        let col = document.getElementById("countplot_select").value;
+        if (!col) {
+          alert("Select a column");
+          return;
+        }
+
+        fetch("/countplot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("countplot_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+
+      function generatePieChart() {
+        let col = document.getElementById("piechart_select").value;
+        if (!col) {
+          alert("Select a column");
+          return;
+        }
+
+        fetch("/piechart", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("piechart_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+      fetch("/numerical")
+        .then((r) => r.json())
+        .then((cols) => {
+          ["hist_select", "kde_select", "box_select"].forEach((id) => {
+            let sel = document.getElementById(id);
+            cols.forEach((c) => {
+              let opt = document.createElement("option");
+              opt.value = c;
+              opt.textContent = c;
+              sel.appendChild(opt);
+            });
+          });
+        });
+
+      function generateHist() {
+        let col = document.getElementById("hist_select").value;
+        if (!col) return alert("Select column");
+
+        fetch("/histogram", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("hist_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+
+      function generateKDE() {
+        let col = document.getElementById("kde_select").value;
+        if (!col) return alert("Select column");
+
+        fetch("/kdeplot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("kde_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+
+      function generateBox() {
+        let col = document.getElementById("box_select").value;
+        if (!col) return alert("Select column");
+
+        fetch("/boxplot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ column: col }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("box_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+      fetch("/get_columns")
+        .then((r) => r.json())
+        .then((cols) => {
+          [
+            "scat_x",
+            "scat_y",
+            "box_x",
+            "box_y",
+            "box_hue",
+            "dist_x",
+            "dist_y",
+            "bar_x",
+            "bar_y",
+            "line_x",
+            "line_y",
+          ].forEach((id) => {
+            let sel = document.getElementById(id);
+            let opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "--Select--";
+            sel.appendChild(opt);
+
+            cols.forEach((c) => {
+              let o = document.createElement("option");
+              o.value = c;
+              o.textContent = c;
+              sel.appendChild(o);
+            });
+          });
+        });
+
+      function genScatter() {
+        sendBi("/scatterplot", "scat_x", "scat_y", "scat_img");
+      }
+      function genBoxBi() {
+        let x = document.getElementById("box_x").value;
+        let y = document.getElementById("box_y").value;
+        let h = document.getElementById("box_hue").value;
+        fetch("/boxplot_bi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ x: x, y: y, hue: h }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById("box_bi_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+      function genDist() {
+        sendBi("/distplot_bi", "dist_x", "dist_y", "dist_img");
+      }
+      function genBar() {
+        sendBi("/barplot_bi", "bar_x", "bar_y", "bar_img");
+      }
+      function genLine() {
+        sendBi("/lineplot_bi", "line_x", "line_y", "line_img");
+      }
+
+      function sendBi(url, xid, yid, imgid) {
+        let x = document.getElementById(xid).value;
+        let y = document.getElementById(yid).value;
+        fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ x: x, y: y }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            document.getElementById(imgid).src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+
+      function genHeatmap() {
+        fetch("/heatmap")
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.error) {
+              alert(d.error);
+              return;
+            }
+            document.getElementById("heatmap_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+      function genPairPlot() {
+        let kind = document.getElementById("pairplot_kind").value;
+
+        fetch("/pairplot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ kind: kind }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.error) {
+              alert(d.error);
+              return;
+            }
+            document.getElementById("pairplot_img").src =
+              "data:image/png;base64," + d.image;
+          });
+      }
+    </script>
+  </body>
+</html>
